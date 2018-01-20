@@ -68,8 +68,10 @@ dothrakis_by_shift = {}
 for worker, info in workers.items():
     for shift in info['availability']:
         worker_var = pl.LpVariable("%s_%d" % (worker, shift), 0, 1, pl.LpInteger)
+        # store some variable data so we can implement the ban constraint
         var_data = (worker,)
         vars_by_shift[shift].append((worker_var, var_data))
+        # store vars by variable so we can implement the max shift constraint
         vars_by_worker[worker].append(worker_var)
         cost.append(worker_var * info['cost'])
 
@@ -99,7 +101,7 @@ for worker, vars in vars_by_worker.items():
     prob += sum(vars) <= 2
 
 status = prob.solve()
-print("Result", pl.LpStatus[status])
+print("Result:", pl.LpStatus[status])
 results = []
 for shift, vars in vars_by_shift.items():
     results.append({
@@ -109,4 +111,4 @@ for shift, vars in vars_by_shift.items():
     })
 
 for result in sorted(results, key=lambda x: x['shift']):
-    print("Shift:", result['shift'], 'workers', ', '.join(result['workers']), 'dothrakis hired:', int(result['dothrakis']))
+    print("Shift:", result['shift'], 'workers:', ', '.join(result['workers']), 'dothrakis hired:', int(result['dothrakis']))

@@ -63,7 +63,7 @@ for shift, requirement in enumerate(shift_requirements):
     prob += sum(vars_by_shift[shift]) >= requirement
 
 status = prob.solve()
-print("Result", pl.LpStatus[status])
+print("Result:", pl.LpStatus[status])
 results = []
 for shift, vars in vars_by_shift.items():
     results.append({
@@ -72,5 +72,5 @@ for shift, vars in vars_by_shift.items():
     })
 
 for result in sorted(results, key=lambda x: x['shift']):
-    print("Shift:", result['shift'], 'workers', ', '.join(result['workers']))
+    print("Shift:", result['shift'], 'workers:', ', '.join(result['workers']))
 
